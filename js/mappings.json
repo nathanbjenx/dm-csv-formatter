@@ -1,0 +1,9 @@
+[{
+        "submission": "Id",
+        "prediction": "inst#"
+    },
+    {
+        "submission": "Instrument",
+        "prediction": "predicted"
+    }
+]
