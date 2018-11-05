@@ -54,7 +54,7 @@ function csv(wekaMappings, csvDownMappings, http) {
 };
 
 function GetClasses() {
-    return $http.get('app/files/classes.csv').then(function (response) {
+    return $http.get('classes.csv').then(function (response) {
         return response.data;
     })
 }
