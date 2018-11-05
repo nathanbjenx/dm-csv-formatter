@@ -82,13 +82,16 @@ function AddClassesToJson(raw, classes) {
         window.alert("Files different lengths!\nAborting adding classes.")
         return raw;
     }
+    var json = [];
     for (i = 0; i < raw.length; i++) {
+        var obj = raw[i];
         csvDownMappings.forEach(m => {
-            map = m.submission;
-            raw[i][map] = classes[i][map];
+            var map = m.submission;
+            obj[map] = classes[i][map];
         })
+        json.push(obj);
     }
-    return raw;
+    return json;
 }
 
 function csvToJSON(csv) {
@@ -101,9 +104,6 @@ function csvToJSON(csv) {
     })
     for (var i = 1; i < lines.length; i++) {
         var obj = {};
-        if (i == lines.length - 1) {
-            var err = "ell";
-        }
         if (lines[i].length > 0) {
             var currentline = lines[i].split(",");
             for (var j = 0; j < formattedHeaders.length; j++) {
