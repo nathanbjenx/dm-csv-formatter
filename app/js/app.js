@@ -1,6 +1,6 @@
 var app = angular.module('csvStrip', []);
 
-app.controller('csv', ["mappings", csv]);
+app.controller('csv', ["wekaMappings", "csvDownMappings", "$http", csv]);
 
 app.directive('fileReader', function () {
     return {
@@ -26,48 +26,97 @@ app.directive('fileReader', function () {
     };
 });
 
-var mappings = [];
+var wekaMappings = [];
+var csvDownMappings = [];
+var $http = null;
+var addClasses = true;
 
 
-function csv(mappings) {
+function csv(wekaMappings, csvDownMappings, http) {
     var vm = this;
-    vm.greetMe = 'World';
     vm.fileContents = null;
-    mappings = (mappings);
+    wekaMappings = (wekaMappings);
+    csvDownMappings = (csvDownMappings);
     vm.mapTo = "";
     vm.mapFrom = "";
-    mappings.forEach(m => {
+    wekaMappings.forEach(m => {
         vm.mapTo += m.submission + ", ";
         vm.mapFrom += m.prediction + ", ";
     });
     vm.mapTo = RemoveChars(vm.mapTo, 2);
     vm.mapFrom = RemoveChars(vm.mapFrom, 2);
+    vm.classes = true;
+    addClasses = vm.classes;
+    vm.addClasses = function () {
+        addClasses = vm.classes;
+    }
+    $http = http;
 };
 
+function GetClasses() {
+    return $http.get('app/files/classes.csv').then(function (response) {
+        return response.data;
+    })
+}
+
 function download(contents) {
-    rawJSON = csvToJSON(contents);
-    formattedJSON = formatJSON(rawJSON);
-    csvDown = JSONToCsv(formattedJSON);
-    TriggerDownload(csvDown);
-    return csvDown;
+    return GetClasses().then(function (classes) {
+        rawJSON = csvToJSON(contents);
+        mappings = wekaMappings;
+        if (addClasses == true) {
+            classes = csvToJSON(classes);
+            rawJSON = AddClassesToJson(rawJSON, classes);
+            csvDownMappings.forEach(m => {
+                mappings.push(m);
+            })
+        }
+        formattedJSON = formatJSON(rawJSON, mappings);
+        csvDown = JSONToCsv(formattedJSON, mappings);
+        TriggerDownload(csvDown);
+        return csvDown;
+    })
 };
+
+function AddClassesToJson(raw, classes) {
+    if (raw.length != classes.length) {
+        window.alert("Files different lengths!\nAborting adding classes.")
+        return raw;
+    }
+    for (i = 0; i < raw.length; i++) {
+        csvDownMappings.forEach(m => {
+            map = m.submission;
+            raw[i][map] = classes[i][map];
+        })
+    }
+    return raw;
+}
 
 function csvToJSON(csv) {
     var lines = csv.split("\n");
     var result = [];
     var headers = lines[0].split(",");
-    for (var i = 1; i < lines.length - 1; i++) {
+    formattedHeaders = []
+    headers.forEach(h => {
+        formattedHeaders.push(h.replace(/\s/g, ''));
+    })
+    for (var i = 1; i < lines.length; i++) {
         var obj = {};
-        var currentline = lines[i].split(",");
-        for (var j = 0; j < headers.length; j++) {
-            obj[headers[j]] = currentline[j];
+        if (i == lines.length - 1) {
+            var err = "ell";
         }
-        result.push(obj);
+        if (lines[i].length > 0) {
+            var currentline = lines[i].split(",");
+            for (var j = 0; j < formattedHeaders.length; j++) {
+                var header = formattedHeaders[j];
+                obj[header] = currentline[j];
+            }
+            result.push(obj);
+        }
     }
     return result;
 };
 
-function formatJSON(raw) {
+function formatJSON(raw, mappings) {
     formatted = []
     raw.forEach(el => {
         var newEl = {};
@@ -91,13 +140,14 @@ function GetAfterLastOccurance(text, filter = ":") {
     return popped;
 };
 
-function JSONToCsv(json, separator = ",", newline = "\n") {
+function JSONToCsv(json, mappings, separator = ",", newline = "\n") {
     var csv = "";
     mappings.forEach(m => {
         csv += m.submission + separator;
     })
     csv = RemoveChars(csv, 1);
     csv += newline;
+
 
     json.forEach(el => {
         for (var i = 0; i < mappings.length; i++) {
@@ -109,7 +159,7 @@ function JSONToCsv(json, separator = ",", newline = "\n") {
 
         csv += newline
     });
-    csv = RemoveChars(csv, 2);
+    csv = RemoveChars(csv, 1);
     return csv;
 };
 

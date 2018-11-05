@@ -17,9 +17,18 @@
   <div ng-controller="csv as vm">
     <div>
       <div class="tooltip">
-        Please select a file csv file to be converted from: "{{vm.mapFrom}}" to: "{{vm.mapTo}}"</p>
+        <p>Please select a file csv file to be converted from: "{{vm.mapFrom}}" to: "{{vm.mapTo}}"</p>
         <span class="tooltiptext">To change the destination format, modify the mappings variable located in
           js/constants.js</span>
+      </div>
+      <br />
+      <div class="tooltip">
+        <p>Add Classes
+          <label class="switch">
+            <input type="checkbox" ng-model="vm.classes" ng-change="vm.addClasses()">
+            <span class="slider round"></span>
+          </label>
+        </p>
       </div>
     </div>
     <input type="file" file-reader="fileContent" accept=".csv" />
