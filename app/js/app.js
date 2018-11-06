@@ -62,7 +62,7 @@ function GetClasses() {
 function download(contents) {
     return GetClasses().then(function (classes) {
         rawJSON = csvToJSON(contents);
-        mappings = wekaMappings;
+        var mappings = angular.copy(wekaMappings);
         if (addClasses == true) {
             classes = csvToJSON(classes);
             rawJSON = AddClassesToJson(rawJSON, classes);
