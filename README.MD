@@ -1,6 +1,7 @@
 # CSV Formatter for Data Mining Assignment 
 
-A quick and dirty way of formatting csv files that are outputted by tools such as WEKA to a format suitable for submission.
+An application for producing the most accurate possible instrument predictions from multiple WEKA predictions.
 
 ## Running
-To run just clone the repo and run the index.html from a web browser.
+There is a live demo at [https://nathanjenx.github.io/dm-csv-formatter/](https://nathanjenx.github.io/dm-csv-formatter/)
+To run just clone the repo and open index.html from a web browser.

@@ -1,16 +1,5 @@
 var app = angular.module('csvStrip');
 
-
-var csvDownMappings = [{
-        "submission": "class1",
-        "prediction": "class1"
-    },
-    {
-        "submission": "class2",
-        "prediction": "class2"
-    },
-];
-
 var wekaMappings = [{
         "submission": "Id",
         "prediction": "inst#"
@@ -19,8 +8,21 @@ var wekaMappings = [{
         "submission": "Instrument",
         "prediction": "predicted"
     },
+    {
+        "submission": "Certainty",
+        "prediction": "prediction"
+    }
 ];
 
+var downloadMapping = [{
+        "submission": "Id",
+        "prediction": "Id"
+    },
+    {
+        "submission": "Instrument",
+        "prediction": "Instrument"
+    }
+];
 
 app.constant('wekaMappings', wekaMappings);
-app.constant('csvDownMappings', csvDownMappings);
+app.constant('downloadMapping', downloadMapping);

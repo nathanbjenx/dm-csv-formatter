@@ -17,24 +17,31 @@
   <div ng-controller="csv as vm">
     <div>
       <div class="tooltip">
-        <p>Please select a file csv file to be converted from: "{{vm.mapFrom}}" to: "{{vm.mapTo}}"</p>
+        <p>Select at least one file csv file to be converted from: "{{vm.mapFrom}}" to: "{{vm.mapTo}}", taking into
+          account the class2 value and prediction certainty</p>
         <span class="tooltiptext">To change the destination format, modify the mappings variable located in
           js/constants.js</span>
       </div>
       <br />
       <div class="tooltip">
-        <p>Add Classes
+        <p>Add Random
           <label class="switch">
-            <input type="checkbox" ng-model="vm.classes" ng-change="vm.addClasses()">
+            <input type="checkbox" ng-model="vm.random" ng-change="vm.setRandom()">
             <span class="slider round"></span>
           </label>
         </p>
       </div>
+      <input type="file" file-reader="fileContent" accept=".csv" />
+      <div ng-if="vm.preds.length > 0">
+        <p>Files for conversion: {{vm.preds.length}}</p>
+        <p> {{vm.fileNames()}}</p>
+        <button ng-click="vm.run()">Run</button>
+        <button ng-click="vm.reset()">Reset</button>
+      </div>
     </div>
-    <input type="file" file-reader="fileContent" accept=".csv" />
-    <div ng-if="fileContent.length >0">
+    <div ng-if="vm.fileContent().length > 0">
       <h2>Output File Content:</h2>
-      <div class="scrollbox">{{fileContent}}</div>
+      <div class="scrollbox">{{vm.fileContent()}}</div>
     </div>
   </div>
 </body>
